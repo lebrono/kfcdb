@@ -3,12 +3,13 @@ package main
 import (
 	"os"
 	"fmt"
+	"log"
 
 	 "github.com/gin-gonic/gin"
 	 _ "github.com/go-sql-driver/mysql"
 	 h "test/sample/api/handlers"
-	 "gopkg.in/mgo.v2"
-	 //"test/sample/api/config"
+	 "test/sample/api/config"
+	"github.com/jinzhu/gorm"
 )
 
 func main() {
@@ -17,19 +18,12 @@ func main() {
 	LoadAPIRoutes(router, &db)
 }
 
-func LoadAPIRoutes(r *gin.Engine, db *mgo.Session) {
+func LoadAPIRoutes(r *gin.Engine, db *gorm.DB) {
 	public := r.Group("/api/v1")
-
-	userHandler := h.NewUserHandler(db)
-	public.GET("/users", userHandler.Index)
-	public.POST("/users", userHandler.Create)
-	public.POST("/auth", userHandler.Auth)
 
 	//manage category
 	categoryHandler := h.NewCategoryHandler(db)
 	public.GET("/categories", categoryHandler.Index)
-	public.POST("/category", categoryHandler.Create)
-	public.PUT("/category/:category_id", categoryHandler.Update)
 
 	var port = os.Getenv("PORT")
 	if port == "" {
@@ -39,14 +33,22 @@ func LoadAPIRoutes(r *gin.Engine, db *mgo.Session) {
 	r.Run(fmt.Sprintf(":%s", port))
 }
 
-func InitDB() *mgo.Session {
-	sess, err := mgo.Dial("mongodb://localhost/kfcdb")
-	//sess, err := mgo.Dial("mongodb://rsbulanon:Passw0rd@ds019829.mlab.com:19829/sampledb")
+func InitDB() *gorm.DB {
+	dbURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		config.GetString("DB_USER"), config.GetString("DB_PASS"),
+		config.GetString("DB_HOST"), config.GetString("DB_PORT"),
+		config.GetString("DB_NAME"))
+	log.Printf("\nDatabase URL: %s\n", dbURL)
+
+	_db, err := gorm.Open("mysql", dbURL)
 	if err != nil {
 		panic(fmt.Sprintf("Error connecting to the database:  %s", err))
 	}
-	sess.SetSafe(&mgo.Safe{})
-	return sess
+	_db.DB()
+	_db.LogMode(true)
+	//_db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&m.Category{})
+	_db.Set("gorm:table_options", "ENGINE=InnoDB")
+	return _db
 }
 
 func GetPort() string {
