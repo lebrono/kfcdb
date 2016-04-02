@@ -24,6 +24,7 @@ func LoadAPIRoutes(r *gin.Engine, db *gorm.DB) {
 	//manage category
 	categoryHandler := h.NewCategoryHandler(db)
 	public.GET("/categories", categoryHandler.Index)
+	public.POST("/categories", categoryHandler.Create)
 
 	var port = os.Getenv("PORT")
 	if port == "" {
