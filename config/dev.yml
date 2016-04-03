@@ -1,1 +1,8 @@
-DB_URL : "mongodb://localhost/sampledb"
+DB_HOST: "localhost"
+//DB_HOST: "192.168.1.129"
+DB_PORT: 3306
+DB_USER: "kfc"
+DB_PASS: "kfc"
+DB_NAME: "kfc"
+
+APP_SECRET: "5_*aqzq))_fca^an%$w%hd$*&lubm_un6dw8xv$bw@_)+)k!m-"
