@@ -38,6 +38,12 @@ func LoadAPIRoutes(r *gin.Engine, db *gorm.DB) {
 	public.POST("/menus", menuHandler.Create)
 	public.PUT("/menus/:menu_id", menuHandler.Update)
 
+	//manage fun cards
+	cardHandler := h.NewFunCardHandler(db)
+	public.GET("/fun_cards", cardHandler.Index)
+	public.POST("/fun_cards", cardHandler.Create)
+	public.PUT("/fun_cards/:card_id", cardHandler.Update)
+
 	var port = os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
