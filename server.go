@@ -44,6 +44,12 @@ func LoadAPIRoutes(r *gin.Engine, db *gorm.DB) {
 	public.POST("/fun_cards", cardHandler.Create)
 	public.PUT("/fun_cards/:card_id", cardHandler.Update)
 
+	//manage transactions
+	transactionHandler := h.NewTransactionHandler(db)
+	public.GET("/transactions", transactionHandler.Index)
+	public.POST("/transactions", transactionHandler.Create)
+	public.GET("/transactions/:transaction_no", transactionHandler.Show)
+
 	var port = os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
