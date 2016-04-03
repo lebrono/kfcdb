@@ -32,6 +32,12 @@ func LoadAPIRoutes(r *gin.Engine, db *gorm.DB) {
 	public.GET("/branch/:branch_code", branchHandler.Login)
 	public.POST("/branch", branchHandler.Create)
 
+	//manage menus
+	menuHandler := h.NewMenuHandler(db)
+	public.GET("/menus", menuHandler.Index)
+	public.POST("/menus", menuHandler.Create)
+	public.PUT("/menus/:menu_id", menuHandler.Update)
+
 	var port = os.Getenv("PORT")
 	if port == "" {
 		port = "8080"

@@ -27,7 +27,7 @@ func (handler BranchHandler) Index(c *gin.Context) {
 	c.JSON(http.StatusOK, &branches)
 }
 
-// Index retrieves a list of categories
+// Create new branch
 func (handler BranchHandler) Create(c *gin.Context) {
 	now := time.Now().UTC()
 	branch_code := c.PostForm("branch_code")
