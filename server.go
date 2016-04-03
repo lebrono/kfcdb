@@ -29,6 +29,7 @@ func LoadAPIRoutes(r *gin.Engine, db *gorm.DB) {
 	//manage branches
 	branchHandler := h.NewBranchHandler(db)
 	public.GET("/branch", branchHandler.Index)
+	public.GET("/branch/:branch_code", branchHandler.Login)
 	public.POST("/branch", branchHandler.Create)
 
 	var port = os.Getenv("PORT")

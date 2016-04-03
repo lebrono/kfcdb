@@ -47,7 +47,17 @@ func (handler BranchHandler) Create(c *gin.Context) {
 		handler.db.Exec("INSERT INTO tbl_branch VALUES (null,?,?,?,?,?,?,?,?,?)",branch_code,branch_name,branch_address,branch_email,branch_contact_no,latitude,longitude,now,now)
 		respond(http.StatusCreated,"New branch created!",c,false)	
 	}
+}
 
+func (handler BranchHandler) Login(c *gin.Context) {
+	branch_code := c.Param("branch_code")
+ 	branch := m.Branch{}
+	handler.db.Table("tbl_branch").Where("branch_code = ?",branch_code).First(&branch)
+	if branch.Branch_Code != "" {
+		c.JSON(http.StatusOK, &branch)
+	} else {
+		respond(http.StatusBadRequest,"Branch not found",c,true)	
+	}
 }
 
 
