@@ -3,6 +3,8 @@ package handlers
 import (
 	"net/http"
 	"time"
+	"encoding/json"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -38,7 +40,7 @@ func (handler TransactionHandler) Create(c *gin.Context) {
 	is_ok_pos := c.PostForm("is_ok_pos")
 	order_type := c.PostForm("order_type")
 	status := c.PostForm("status")
-	pick_up_date := c.PostForm("pick_up_date")
+	pick_up_date := "2016-04-05 15:01:45"
 	user_id := c.PostForm("user_id")
 	user_name := c.PostForm("user_name")
 	dc_type := c.PostForm("discount_type")
@@ -46,9 +48,22 @@ func (handler TransactionHandler) Create(c *gin.Context) {
 	dc_percent := c.PostForm("discount_percent")
 	branch_code := c.PostForm("branch_code")
 	
+	orders := []m.Order{}
+	err := json.Unmarshal([]byte(order),&orders);
+	if err == nil {
+		fmt.Println("conversion successful")
+	} else {
+		fmt.Println("failed to convert", err)
+	}
 
-	handler.db.Exec("INSERT INTO tbl_transaction VALUES (null,?,?,'',0,'',?,?,?,?,'',?,?,?,?,?,?,?,?,?,?,?,?,?,?)",tx_no,order,total_amount,grand_total,is_points,points_used,fun_id,is_ok_kitchen,is_ok_pos,order_type,status,pick_up_date,user_id,user_name,dc_type,dc_total,dc_percent,branch_code,now,now)
-	respond(http.StatusCreated,"New transaction created!",c,false)	
+	for _,item := range orders {
+		fmt.Println("item ---> ", item.Menu_Name)
+		menu_name := item.Menu_Name
+		quantity := string(item.Qty)
+		amount := string(item.Menu_Amount)
+		handler.db.Exec("INSERT INTO tbl_transaction VALUES (null,?,?,?,?,?,?,?,?,'',?,?,?,?,?,?,?,?,?,?,?,?,?,?)",tx_no,menu_name,quantity,amount,total_amount,grand_total,is_points,points_used,fun_id,is_ok_kitchen,is_ok_pos,order_type,status,pick_up_date,user_id,user_name,dc_type,dc_total,dc_percent,branch_code,now,now)
+	}
+	respond(http.StatusCreated,tx_no,c,false)	
 }
 
 // get transaction by transaction no

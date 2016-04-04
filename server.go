@@ -43,6 +43,7 @@ func LoadAPIRoutes(r *gin.Engine, db *gorm.DB) {
 	public.GET("/fun_cards", cardHandler.Index)
 	public.POST("/fun_cards", cardHandler.Create)
 	public.PUT("/fun_cards/:card_id", cardHandler.Update)
+	public.GET("/fun_cards/:card_id", cardHandler.Show)
 
 	//manage transactions
 	transactionHandler := h.NewTransactionHandler(db)

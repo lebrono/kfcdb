@@ -60,4 +60,16 @@ func (handler FunCardHandler) Update(c *gin.Context) {
 }
 
 
+func (handler FunCardHandler) Show(c *gin.Context) {
+	card_id := c.Param("card_id")
+	card := m.FunCard{}
+	handler.db.Table("tbl_funpoints").Where("fun_idnumber = ?",card_id).First(&card)
+	if card.Fun_Name != "" {
+		c.JSON(http.StatusOK,&card)
+	} else {
+		respond(http.StatusBadRequest,"Card not found!",c,true)	
+	}
+}
+
+
 
