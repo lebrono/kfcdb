@@ -36,8 +36,12 @@ func (handler TransactionHandler) Create(c *gin.Context) {
 	is_points := c.PostForm("is_points")
 	points_used := c.PostForm("points_used")
 	fun_id := c.PostForm("fun_card_id")
-	is_ok_kitchen := c.PostForm("is_ok_kitchen")
-	is_ok_pos := c.PostForm("is_ok_pos")
+	is_ok_kitchen := 0
+	is_ok_pos := 0
+
+	//TODO
+	//is_ok_kitchen := c.PostForm("is_ok_kitchen")
+	//is_ok_pos := c.PostForm("is_ok_pos")
 	order_type := c.PostForm("order_type")
 	status := c.PostForm("status")
 	pick_up_date := "2016-04-05 15:01:45"
@@ -61,7 +65,7 @@ func (handler TransactionHandler) Create(c *gin.Context) {
 		menu_name := item.Menu_Name
 		quantity := string(item.Qty)
 		amount := string(item.Menu_Amount)
-		handler.db.Exec("INSERT INTO tbl_transaction VALUES (null,?,?,?,?,?,?,?,?,'',?,?,?,?,?,?,?,?,?,?,?,?,?,?)",tx_no,menu_name,quantity,amount,total_amount,grand_total,is_points,points_used,fun_id,is_ok_kitchen,is_ok_pos,order_type,status,pick_up_date,user_id,user_name,dc_type,dc_total,dc_percent,branch_code,now,now)
+		handler.db.Exec("INSERT INTO tbl_transaction VALUES (null,?,?,?,?,?,?,?,?,'',?,?,?,?,?,?,?,?,?,?,?,?,?,?,'',null)",tx_no,menu_name,quantity,amount,total_amount,grand_total,is_points,points_used,fun_id,is_ok_kitchen,is_ok_pos,order_type,status,pick_up_date,user_id,user_name,dc_type,dc_total,dc_percent,branch_code,now,now)
 	}
 	respond(http.StatusCreated,tx_no,c,false)	
 }
@@ -77,6 +81,7 @@ func (handler TransactionHandler) Show(c *gin.Context) {
 		respond(http.StatusBadRequest,"Transaction not found",c,true)	
 	}
 }
+
 
 
 
